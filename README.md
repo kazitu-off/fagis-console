@@ -65,4 +65,3 @@ MIT License (c) 2025 kubydog101
 
 Сообщить об ошибке или предложить улучшение:
 - [Issues на GitHub](https://github.com/kubydog101/fagis-console/issues)
-``` 
