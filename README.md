@@ -1,4 +1,11 @@
 
+![FAGIS Version](https://img.shields.io/badge/FAGIS-1.0-blue?logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
+[![GitHub Issues](https://img.shields.io/github/issues/kubydog101/fagis-console)](https://github.com/kubydog101/fagis-console/issues)
+[![Last Commit](https://img.shields.io/github/last-commit/kubydog101/fagis-console)](https://github.com/kubydog101/fagis-console/commits/main)
+
 # FAGIS Console OS 🖥️
 
 Имитация локальной консольной операционной системы на Python с базовыми функциями и интерактивным интерфейсом. 
