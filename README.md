@@ -1,5 +1,5 @@
 
-![FAGIS Version](https://img.shields.io/badge/FAGIS-1.0-blue?logo=python&logoColor=white)
+![FAGIS Version](https://img.shields.io/badge/FAGIS-1.1-blue?logo=python&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
