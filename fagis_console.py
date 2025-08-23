@@ -3,6 +3,7 @@ import sys
 import time
 import webbrowser
 import requests
+import re
 from datetime import datetime
 
 class Localization:
@@ -57,7 +58,23 @@ class Localization:
             'update_skipped': "Update check skipped.",
             'update_error': "Failed to check updates: {}",
             'update_latest': "You have the latest version ({})",
-            'checking_update': "Checking for updates..."
+            'checking_update': "Checking for updates...",
+            'check_url_title': "Link Security Check",
+            'safe_url': "The link appears safe: {}",
+            'malicious_url': "DANGER! Malicious link detected: {}",
+            'url_not_recognized': "Link not recognized: {}",
+            'check_error': "Security check error: {}",
+            'malicious_db_error': "Failed to load malicious URLs database: {}",
+            'enter_url': "Enter URL to check> ",
+            'url_detected': "Security warning: Potential malicious URL detected - {}",
+            'checking_urls': "Scanning for malicious links...",
+            'clean_content': "Content appears clean. No malicious links detected.",
+            'internet_connected': "Internet connection: Active",
+            'internet_failed': "Internet connection: Failed (Error: {})",
+            'help_urlcheck': "urlcheck <url> - check URL safety",
+            'help_internet': "checkinternet - test internet connection",
+            'malicious_db_loaded': "Loaded {} malicious URL patterns",
+            'malicious_db_empty': "Warning: Malicious URL database is empty"
         }
         
         ru_translations = base_translations.copy()
@@ -105,7 +122,23 @@ class Localization:
             'update_skipped': "Проверка обновлений пропущена.",
             'update_error': "Ошибка проверки обновлений: {}",
             'update_latest': "У вас последняя версия ({})",
-            'checking_update': "Проверка обновлений..."
+            'checking_update': "Проверка обновлений...",
+            'check_url_title': "Проверка безопасности ссылок",
+            'safe_url': "Ссылка безопасна: {}",
+            'malicious_url': "ОПАСНО! Обнаружена вредоносная ссылка: {}",
+            'url_not_recognized': "Ссылка не распознана: {}",
+            'check_error': "Ошибка проверки: {}",
+            'malicious_db_error': "Ошибка загрузки базы опасных ссылок: {}",
+            'enter_url': "Введите URL для проверки> ",
+            'url_detected': "Предупреждение безопасности: Обнаружена потенциально опасная ссылка - {}",
+            'checking_urls': "Поиск опасных ссылок...",
+            'clean_content': "Вредоносные ссылки не обнаружены.",
+            'internet_connected': "Интернет-соединение: Активно",
+            'internet_failed': "Интернет-соединение: Недоступно (Ошибка: {})",
+            'help_urlcheck': "urlcheck <url> - проверить безопасность ссылки",
+            'help_internet': "checkinternet - проверить интернет-соединение",
+            'malicious_db_loaded': "Загружено {} шаблонов опасных URL",
+            'malicious_db_empty': "Предупреждение: База опасных URL пуста"
         })
         
         return {'en': base_translations, 'ru': ru_translations}.get(self.lang, base_translations)
@@ -122,21 +155,43 @@ class ConsoleOS:
         self.current_user = "guest"
         self.current_dir = os.getcwd()
         self.running = True
-        self.version = "1.0"
+        self.version = "1.1"
         self.version_url = "https://raw.githubusercontent.com/kubydog101/fagis-console/refs/heads/main/ver.txt"
         self.download_url = "https://github.com/kubydog101/fagis-console/releases/latest"
+        self.malicious_urls = []
         
-        # Инициализация локализации с защитой от ошибок
+        # Ссылка на ваш TXT-файл с опасными URL
+        self.malicious_db_url = "https://raw.githubusercontent.com/kubydog101/fagis-console/refs/heads/main/scam-db.txt"  # ЗАМЕНИТЕ НА ВАШУ ССЫЛКУ
+        
+        # Инициализация локализации
         try:
             self.locale = self.select_language()
         except Exception as e:
             print(f"Language error: {str(e)}. Using English.")
             self.locale = Localization('en')
 
+        # Загрузка базы опасных URL
+        self.load_malicious_urls()
+
+    def load_malicious_urls(self):
+        """Загрузка базы опасных URL из удаленного TXT-файла"""
+        try:
+            response = requests.get(self.malicious_db_url, timeout=10)
+            response.raise_for_status()
+            self.malicious_urls = [line.strip().lower() for line in response.text.splitlines() if line.strip()]
+            
+            if self.malicious_urls:
+                print(self.locale.get('malicious_db_loaded', len(self.malicious_urls)))
+            else:
+                print(self.locale.get('malicious_db_empty'))
+        except Exception as e:
+            print(self.locale.get('malicious_db_error', str(e)))
+            self.malicious_urls = []
+
     def select_language(self):
         self.clear_screen()
         print("┌─────────────────────────────────────────────┐")
-        print("│            FAGIS Console OS v1.0            │")
+        print("│            FAGIS Console OS v1.1            │")
         print("└─────────────────────────────────────────────┘")
         print("             Select language / Выберите язык\n")
         
@@ -156,13 +211,76 @@ class ConsoleOS:
     def clear_screen(self):
         os.system('cls' if os.name == 'nt' else 'clear')
 
+    def check_internet(self):
+        """Проверка интернет-соединения"""
+        test_urls = [
+            "https://www.google.com",
+            "https://www.cloudflare.com",
+            "https://1.1.1.1"
+        ]
+        
+        for url in test_urls:
+            try:
+                response = requests.get(url, timeout=5)
+                if response.status_code == 200:
+                    print(self.locale.get('internet_connected'))
+                    return True
+            except Exception as e:
+                last_error = str(e)
+        
+        print(self.locale.get('internet_failed', last_error))
+        return False
+
+    def check_url_safety(self, *args):
+        """Проверка безопасности URL"""
+        if not self.malicious_urls:
+            print("Database not loaded. Run 'update_db' to reload")
+            return
+            
+        if not args:
+            url = input(self.locale.get('enter_url')).strip()
+        else:
+            url = args[0].strip()
+        
+        if not url:
+            return
+            
+        try:
+            # Нормализация URL
+            clean_url = url.lower()
+            if not re.match(r'^https?://', clean_url):
+                clean_url = 'http://' + clean_url
+            
+            # Извлечение домена
+            domain_match = re.search(r'https?://([^/:]+)', clean_url)
+            if not domain_match:
+                print(self.locale.get('url_not_recognized', url))
+                return
+                
+            domain = domain_match.group(1)
+            
+            # Проверка в базе опасных URL
+            for malicious_pattern in self.malicious_urls:
+                if malicious_pattern in domain:
+                    print(self.locale.get('malicious_url', url))
+                    return
+                    
+            print(self.locale.get('safe_url', url))
+        except Exception as e:
+            print(self.locale.get('check_error', str(e)))
+
     def check_updates(self):
         try:
-            print("\n" + self.locale.get('checking_update', 'Checking for updates...'))
+            print("\n" + self.locale.get('checking_update'))
             timestamp = int(time.time())
             url = f"{self.version_url}?t={timestamp}"
             
             try:
+                if not self.check_internet():
+                    print("\n" + self.locale.get('update_error', "No internet connection"))
+                    time.sleep(2)
+                    return
+                    
                 response = requests.get(url, timeout=5)
                 response.raise_for_status()
                 latest_version = response.text.strip()
@@ -201,9 +319,6 @@ class ConsoleOS:
         print(self.locale.get('current_user', self.current_user))
         print(f"Current directory: {self.current_dir}\n")
         print(self.locale.get('help_help'))
-
-    # Все команды системы остаются без изменений
-    # (Команды из предыдущего кода копируются сюда)
 
     def exit_system(self):
         print(self.locale.get('exit_msg'))
@@ -309,6 +424,11 @@ class ConsoleOS:
         
         print(self.locale.get('game_loss', number))
     
+    def update_database(self):
+        """Обновление базы опасных URL"""
+        print("Updating malicious URL database...")
+        self.load_malicious_urls()
+
     def show_help(self, *args):
         help_texts = {
             'help': self.locale.get('help_help'),
@@ -324,6 +444,9 @@ class ConsoleOS:
             'echo': self.locale.get('help_echo'),
             'calc': self.locale.get('help_calc'),
             'game': self.locale.get('help_game'),
+            'checkinternet': self.locale.get('help_internet'),
+            'urlcheck': self.locale.get('help_urlcheck'),
+            'update_db': "update_db - reload malicious URLs database"
         }
         
         if args and args[0] in help_texts:
@@ -332,7 +455,7 @@ class ConsoleOS:
         else:
             print(self.locale.get('help_title'))
             for cmd in sorted(help_texts.keys()):
-                print(f"  {cmd.ljust(8)} {help_texts[cmd]}")
+                print(f"  {cmd.ljust(12)} {help_texts[cmd]}")
 
     def run(self):
         self.clear_screen()
@@ -357,7 +480,10 @@ class ConsoleOS:
             'touch': self.create_file,
             'echo': self.echo_text,
             'calc': self.calculator,
-            'game': self.mini_game
+            'game': self.mini_game,
+            'checkinternet': self.check_internet,
+            'urlcheck': self.check_url_safety,
+            'update_db': self.update_database
         }
         
         while self.running:
