@@ -1,74 +1,72 @@
+# FAGIS Console OS v2.0
 
-![FAGIS Version](https://img.shields.io/badge/FAGIS-1.1-blue?logo=python&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
-[![GitHub Issues](https://img.shields.io/github/issues/kubydog101/fagis-console)](https://github.com/kubydog101/fagis-console/issues)
-[![Last Commit](https://img.shields.io/github/last-commit/kubydog101/fagis-console)](https://github.com/kubydog101/fagis-console/commits/main)
+## 📋 Description
+A feature-rich console-based OS emulator with interactive terminal environment.
 
-# FAGIS Console OS 🖥️
+## ✨ Core Features
 
-Имитация локальной консольной операционной системы на Python с базовыми функциями и интерактивным интерфейсом. 
+### Basic Commands
+- `help`, `exit`, `clear`, `time`, `date`, `whoami`, `pwd`, `sysinfo`
 
-## ✨ Основные функции
+### File Management
+- `ls`/`dir` - List files
+- `cd` - Change directory
+- `mkdir` - Create directory
+- `touch` - Create file
+- `rm`/`del` - Delete files/dirs
+- `cat` - View file contents
+- `echo` - Print text
 
-- 📁 **Файловый менеджер**: навигация (`cd`), просмотр (`ls`), создание (`mkdir`, `touch`)
-- 📟 **Системные утилиты**: 
-  - Вывод времени/даты (`time`, `date`)
-  - Информация о пользователе (`whoami`)
-  - Очистка экрана (`clear`)
-- 🧮 **Калькулятор**: базовые вычисления (`calc`)
-- 🎮 **Мини-игра**: "Угадай число" (`game`)
-- 🔄 **Автообновление**: проверка новых версий через GitHub
-- 🌍 **Локализация**: поддержка русского и английского языков
+### Entertainment
+- `calc` - Calculator
+- `game` - Number guessing game
 
-## 🚀 Быстрый старт
+### Utilities
+- `history` - Command history
+- `checkinternet` - Test connection
+- `urlcheck` - Check URL safety
+- `update` - Check for updates
+- `update_db` - Update malicious URL database
 
-1. **Требования**:
-   - Python 3.10+
+## 🚀 10 New Functions
 
-## 🖥️ Доступные команды
+| Command | Description |
+|---------|-------------|
+| `hash` | Calculate MD5/SHA1/SHA256 hashes |
+| `timer` | Countdown timer |
+| `stopwatch` | Stopwatch |
+| `notes` | Notes manager (CRUD + search) |
+| `portscan` | Port scanner |
+| `password` | Password generator |
+| `translate` | Simple translator |
+| `qr` | QR code generator (requires qrencode) |
+| `reminder` | Set reminders |
+| `convert` | Unit converter |
 
-| Команда     | Описание                       | Пример использования       |
-|-------------|--------------------------------|----------------------------|
-| `help`      | Показать справку               | `help cd`                  |
-| `exit`      | Выйти из системы               | `exit`                     |
-| `clear`     | Очистить терминал              | `clear`                    |
-| `time`      | Показать текущее время         | `time`                     |
-| `date`      | Показать текущую дату          | `date`                     |
-| `whoami`    | Показать текущего пользователя | `whoami`                   |
-| `ls`        | Показать файлы директории      | `ls Documents`             |
-| `cd`        | Сменить директорию             | `cd /home/user`            |
-| `mkdir`     | Создать директорию             | `mkdir new_folder`         |
-| `touch`     | Создать файл                   | `touch document.txt`       |
-| `echo`      | Вывести текст                  | `echo "Привет мир!"`       |
-| `calc`      | Открыть калькулятор            | `calc`                     |
-| `game`      | Запустить игру "Угадай число"  | `game`                     |
+## 🎨 Key Features
+- **Color interface** (auto-disabled on Windows)
+- **Multi-language** (EN/RU)
+- **Command history**
+- **Command aliases** (ls/dir, exit/quit, etc.)
+- **Security features** (safe eval, path validation, malicious URL DB)
 
-## 🔍 Особенности реализации
+## 🚀 Quick Start
+```bash
+pip install requests
+python3 fagis_console.py
+```
 
-- **Кроссплатформенность**: полная поддержка Windows/Linux/macOS
-- **Безопасность**: проверка корректности путей и прав доступа
-- **Интерфейс**: 
-  - Динамическое приглашение с текущей директорией
-  - ASCII-символы для визуального оформления
+## 📝 Examples
+```
+> password          # Generate password
+> notes add TODO    # Create note
+> urlcheck https://bit.ly/xxx  # Check URL
+> convert           # Convert units
+```
 
-## 📜 Лицензия
+## 🔧 Requirements
+- Python 3.6+
+- requests library
 
-MIT License (c) 2025 kubydog101
-
-**Разрешено**:
-- Коммерческое использование
-- Модификация и распределение
-- Частное использование
-
-**Обязательно**:
-- Сохранение копирайта и уведомления о лицензии
-- Указание изменений в модифицированных версиях
-
-Подробности в файле [LICENSE](LICENSE).
-
-## 🤝 Сообщество 
-
-Сообщить об ошибке или предложить улучшение:
-- [Issues на GitHub](https://github.com/kubydog101/fagis-console/issues)
+---
+**FAGIS Console OS** - Your console assistant! 🚀
